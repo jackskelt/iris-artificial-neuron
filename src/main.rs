@@ -6,6 +6,7 @@ mod draw;
 mod line_graph;
 mod neuron;
 mod separation_graph;
+mod state;
 mod train_data;
 
 use raylib::prelude::*;
@@ -33,6 +34,7 @@ pub struct State {
     pub loss: f64,
     pub target: Option<f64>,
     pub iris_type: Iris,
+    pub iris_type_component: (bool, i32),
 }
 
 fn main() {
@@ -60,7 +62,7 @@ fn main() {
 
     let train_data = data
         .iter()
-        .map(|d| (vec![d.sepal_length_cm, d.sepal_width_cm], d.species.into()))
+        .map(|d| (vec![d.sepal_length, d.sepal_width], d.species.into()))
         .collect();
 
     let test_data = IrisData::get_test_data(&data, 3);
@@ -92,6 +94,7 @@ fn main() {
         target: None,
         loss: 0.0,
         iris_type: Iris::Virginica,
+        iris_type_component: (false, 0),
     };
 
     // state

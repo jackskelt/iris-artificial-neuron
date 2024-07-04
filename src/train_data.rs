@@ -5,11 +5,11 @@ use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Iris {
-    #[serde(rename = "Iris-setosa")]
+    #[serde(rename = "setosa")]
     Setosa,
-    #[serde(rename = "Iris-virginica")]
+    #[serde(rename = "virginica")]
     Virginica,
-    #[serde(rename = "Iris-versicolour")]
+    #[serde(rename = "versicolor")]
     Versicolour,
 }
 
@@ -35,19 +35,17 @@ impl Into<f64> for Iris {
 }
 
 #[derive(Deserialize, Debug, Clone, Copy)]
-#[serde(rename_all = "PascalCase")]
 pub struct IrisData {
-    pub id: usize,
-    pub sepal_length_cm: f64,
-    pub sepal_width_cm: f64,
-    pub petal_length_cm: f64,
-    pub petal_width_cm: f64,
+    pub sepal_length: f64,
+    pub sepal_width: f64,
+    pub petal_length: f64,
+    pub petal_width: f64,
     pub species: Iris,
 }
 
 impl IrisData {
     pub fn read_csv() -> Vec<IrisData> {
-        let data: Vec<IrisData> = csv::Reader::from_path("./Iris.csv")
+        let data: Vec<IrisData> = csv::Reader::from_path("./iris.csv")
             .unwrap()
             .deserialize()
             .map(|v| v.unwrap())
@@ -70,10 +68,10 @@ impl IrisData {
     pub fn get_graph_data(data: &Vec<Self>) -> Vec<(f32, f32, f32, f32, Color)> {
         let mut graph_data = vec![];
         for d in data {
-            let sepal_length = d.sepal_length_cm as f32;
-            let sepal_width = d.sepal_width_cm as f32;
-            let petal_length = d.petal_length_cm as f32;
-            let petal_width = d.petal_width_cm as f32;
+            let sepal_length = d.sepal_length as f32;
+            let sepal_width = d.sepal_width as f32;
+            let petal_length = d.petal_length as f32;
+            let petal_width = d.petal_width as f32;
             let color = match d.species {
                 Iris::Setosa => Color::RED,
                 Iris::Virginica => Color::GREEN,
@@ -90,17 +88,17 @@ impl IrisData {
         let mut other_count = 0;
 
         for d in data {
-            let sepal_length = d.sepal_length_cm;
-            let sepal_width = d.sepal_width_cm;
-            let petal_length = d.petal_length_cm;
-            let petal_width = d.petal_width_cm;
+            let sepal_length = d.sepal_length;
+            let sepal_width = d.sepal_width;
+            let petal_length = d.petal_length;
+            let petal_width = d.petal_width;
             if d.species == Iris::Setosa && setosa_count < count {
                 setosa_count += 1;
                 test_data.push((
                     vec![sepal_length, sepal_width, petal_length, petal_width],
                     d.species,
                 ));
-            } else if other_count < count {
+            } else if d.species != Iris::Setosa && other_count < count {
                 other_count += 1;
                 test_data.push((
                     vec![sepal_length, sepal_width, petal_length, petal_width],
